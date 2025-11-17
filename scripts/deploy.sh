@@ -1,28 +1,42 @@
 #!/bin/bash
-echo "Iniciando deploy en Linux/Mac..."
 
+# -----------------------------
+# Deploy script para Jenkins
+# -----------------------------
+
+echo "=== Iniciando deploy desde Jenkins ==="
+
+# Rutas absolutas
 APP_PATH="/var/jenkins_home/workspace/Entregable4/deploy/app.jar"
 LOG_PATH="/var/jenkins_home/workspace/Entregable4/app.log"
+PID_PATH="/var/jenkins_home/workspace/Entregable4/app_pid.txt"
 
-echo "Verificando si el puerto 9090 está libre..."
-if command -v lsof &> /dev/null; then
-    lsof -i :9090 && pkill -f app.jar
-else
-    echo "lsof no está instalado, se saltará la verificación del puerto"
-fi
+echo "Verificando permisos de escritura..."
+touch "$LOG_PATH" || { echo "ERROR: No se puede escribir en $LOG_PATH"; exit 1; }
 
 echo "Matando procesos viejos..."
-pkill -f app.jar || true
+if [ -f "$PID_PATH" ]; then
+    OLD_PID=$(cat "$PID_PATH")
+    if ps -p $OLD_PID > /dev/null; then
+        echo "Matando proceso anterior con PID $OLD_PID..."
+        kill -9 $OLD_PID
+    fi
+fi
+pkill -f "$APP_PATH" || true
 
-echo "Levantando app..."
-# Exponer la app en 0.0.0.0 para que sea accesible fuera del contenedor
-nohup java -jar "$APP_PATH" --server.address=0.0.0.0 --server.port=9090 > "$LOG_PATH" 2>&1 &
+echo "Levantando app en segundo plano..."
+nohup java -jar "$APP_PATH" > "$LOG_PATH" 2>&1 &
 
+# Guardar PID
 APP_PID=$!
+echo $APP_PID > "$PID_PATH"
 echo "App lanzada con PID $APP_PID"
-sleep 10
 
-echo "Mostrando últimos 20 logs"
+# Espera corta para permitir que la app inicialice
+sleep 5
+
+# Mostrar últimas líneas del log para verificar
+echo "Últimas 20 líneas de log:"
 tail -n 20 "$LOG_PATH"
 
-echo "Deploy terminado. Logs en $LOG_PATH"
+echo "=== Deploy terminado ==="
