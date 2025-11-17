@@ -9,5 +9,5 @@ pkill -f app.jar || true
 
 echo "Levantando app..."
 nohup java -jar "$APP_PATH" > "$LOG_PATH" 2>&1 &
-
+disown
 echo "Deploy terminado"
