@@ -46,9 +46,3 @@ URL JDBC: `jdbc:h2:file:./data/playlist`  Usuario: `sa`  Password: vacío
 - `src/main/resources/templates/index.html`: UI con Bootstrap 5
 - `src/main/resources/application.properties`: configuración de H2 y JPA
 - `src/test/java/com/example/playlist/VideoServiceTests.java`: pruebas básicas
-
-## Posibles mejoras
-- Validación UI con mensajes por campo.
-- Botones AJAX (htmx o fetch) para actualizar likes/favoritos sin recargar.
-- Filtros/búsqueda y ordenamiento configurable.
-- Soporte para otras plataformas de video.
