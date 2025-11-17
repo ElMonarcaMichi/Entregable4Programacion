@@ -1,0 +1,6 @@
+com\example\playlist\controller\VideoController.class
+com\example\playlist\PlaylistApplication.class
+com\example\playlist\util\YouTubeUtils.class
+com\example\playlist\model\Video.class
+com\example\playlist\service\VideoService.class
+com\example\playlist\repository\VideoRepository.class
