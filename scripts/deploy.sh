@@ -1,30 +1,15 @@
 #!/bin/bash
-# deploy.sh - Lanzamiento persistente de la app
 
-APP_PATH="/var/jenkins_home/workspace/Entregable4/deploy/app.jar"
-LOG_PATH="/var/jenkins_home/deploy_logs/app.log"
-PID_PATH="/var/jenkins_home/deploy_logs/app.pid"
+DEST_FOLDER="/var/jenkins_home/apps/playlist"
+SOURCE_JAR="/var/jenkins_home/workspace/Entregable4/deploy/app.jar"
 
-mkdir -p "$(dirname "$LOG_PATH")"
+echo "Copiando JAR al directorio de deploy..."
+cp "$SOURCE_JAR" "$DEST_FOLDER/app.jar"
 
-echo "Iniciando deploy persistente..."
+echo "Matando instancia anterior..."
+pkill -f "$DEST_FOLDER/app.jar" || true
 
-# Si hay un PID viejo, matamos el proceso
-if [ -f "$PID_PATH" ]; then
-    OLD_PID=$(cat "$PID_PATH")
-    if ps -p $OLD_PID > /dev/null 2>&1; then
-        echo "Matando proceso viejo con PID $OLD_PID"
-        kill $OLD_PID
-        sleep 2
-    fi
-fi
+echo "Iniciando aplicación..."
+nohup java -jar "$DEST_FOLDER/app.jar" > "$DEST_FOLDER/app.log" 2>&1 &
 
-# Levantamos la app en segundo plano y guardamos el PID
-nohup java -jar "$APP_PATH" > "$LOG_PATH" 2>&1 &
-
-NEW_PID=$!
-echo $NEW_PID > "$PID_PATH"
-
-echo "App lanzada con PID $NEW_PID"
-echo "Logs en $LOG_PATH"
-echo "Deploy terminado"
+echo "Aplicación iniciada en background."
