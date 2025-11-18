@@ -83,21 +83,18 @@ class VideoServiceTests {
     }
     
     @Test
-    void getVideo_withNullId_returnsEmpty() {
-        var result = service.get(null);
-        assertTrue(result.isEmpty());
+    void getVideo_withNullId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.get(null));
     }
     
     @Test
-    void getVideo_withNegativeId_returnsEmpty() {
-        var result = service.get(-10L);
-        assertTrue(result.isEmpty());
+    void getVideo_withNegativeId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.get(-10L));
     }
     
     @Test
-    void getVideo_withZeroId_returnsEmpty() {
-        var result = service.get(0L);
-        assertTrue(result.isEmpty());
+    void getVideo_withZeroId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.get(0L));
     }
     
     @Test
