@@ -51,4 +51,68 @@ class VideoServiceTests {
     assertTrue(opt.isPresent());
     assertEquals(2, opt.get().getLikes());
     }
+    
+    @Test
+    void likeVideo_withNullId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.like(null));
+    }
+    
+    @Test
+    void likeVideo_withNegativeId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.like(-1L));
+    }
+    
+    @Test
+    void likeVideo_withZeroId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.like(0L));
+    }
+    
+    @Test
+    void toggleFavorite_withNullId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.toggleFavorite(null));
+    }
+    
+    @Test
+    void toggleFavorite_withNegativeId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.toggleFavorite(-5L));
+    }
+    
+    @Test
+    void toggleFavorite_withZeroId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.toggleFavorite(0L));
+    }
+    
+    @Test
+    void getVideo_withNullId_returnsEmpty() {
+        var result = service.get(null);
+        assertTrue(result.isEmpty());
+    }
+    
+    @Test
+    void getVideo_withNegativeId_returnsEmpty() {
+        var result = service.get(-10L);
+        assertTrue(result.isEmpty());
+    }
+    
+    @Test
+    void getVideo_withZeroId_returnsEmpty() {
+        var result = service.get(0L);
+        assertTrue(result.isEmpty());
+    }
+    
+    @Test
+    void deleteVideo_withNullId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.delete(null));
+    }
+    
+    @Test
+    void deleteVideo_withNegativeId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.delete(-3L));
+    }
+    
+    @Test
+    void deleteVideo_withZeroId_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> service.delete(0L));
+    }
+    
 }
