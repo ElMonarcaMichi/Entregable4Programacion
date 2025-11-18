@@ -12,8 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+
+
+
 @Service
 public class VideoService {
+    /*  
+    private void validateId(Long id) throws IllegalArgumentException{
+        if (id == null) throw new IllegalArgumentException("id requerido");
+        if (id <= 0) throw new IllegalArgumentException("id debe ser positivo");
+    }
+    */
     private final VideoRepository repository;
 
     public VideoService(VideoRepository repository) {
@@ -48,17 +57,23 @@ public class VideoService {
 
     public void delete(Long id) {
         if (id == null) throw new IllegalArgumentException("id requerido");
+        if (id <= 0) throw new IllegalArgumentException("id debe ser positivo");
+        //validateId(id);
         repository.deleteById(id);
     }
 
     public Optional<Video> get(Long id) {
         if (id == null) return Optional.empty();
+        if (id <= 0) return Optional.empty();
+        //validateId(id);
         return repository.findById(id);
     }
 
     @Transactional
     public int like(Long id) {
         if (id == null) throw new IllegalArgumentException("id requerido");
+        if (id <= 0) throw new IllegalArgumentException("id debe ser positivo");
+        //validateId(id);
         Video v = repository.findById(id).orElseThrow();
         v.setLikes(v.getLikes() + 1);
         // JPA dirty checking will persist on transaction commit
@@ -68,6 +83,8 @@ public class VideoService {
     @Transactional
     public boolean toggleFavorite(Long id) {
         if (id == null) throw new IllegalArgumentException("id requerido");
+        if (id <= 0) throw new IllegalArgumentException("id debe ser positivo");
+        //validateId(id);
         Video v = repository.findById(id).orElseThrow();
         v.setFavorite(!v.isFavorite());
         return v.isFavorite();
